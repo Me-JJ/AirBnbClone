@@ -4,6 +4,8 @@ import com.AirBndProject.entities.HotelContactInfo;
 import lombok.*;
 
 @Data
+@Getter
+@Setter
 public class HotelDto
 {
     private Long id;

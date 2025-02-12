@@ -9,8 +9,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.context.annotation.Primary;
 
 import java.time.LocalDateTime;
-@Data
+import java.util.List;
+
 @Entity
+@Getter
+@Setter
 @Table(name = "hotel")
 public class Hotel
 {
@@ -44,4 +47,6 @@ public class Hotel
     @ManyToOne
     private User owner;
 
+    @OneToMany(mappedBy = "hotel")
+    private List<Room> rooms;
 }

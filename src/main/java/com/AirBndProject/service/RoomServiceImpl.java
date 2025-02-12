@@ -5,7 +5,9 @@ import com.AirBndProject.entities.Hotel;
 import com.AirBndProject.entities.Room;
 import com.AirBndProject.exceptions.ResourceNotFoundException;
 import com.AirBndProject.repository.HotelRepository;
+import com.AirBndProject.repository.InventoryRepository;
 import com.AirBndProject.repository.RoomRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
@@ -25,24 +27,33 @@ public class RoomServiceImpl implements RoomService{
     private final RoomRepository roomRepository;
     private final HotelRepository hotelRepository;
     private final ModelMapper modelMapper;
+    private final InventoryService inventoryService;
 
     @Override
+    @Transactional
     public RoomDto createNewRoom(Long hotelId, RoomDto rootDto)
     {
-        log.debug("Fetching Hotel with ID -> {}",hotelId);
+        log.info("Fetching Hotel with ID -> {}",hotelId);
 
         Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(()-> new ResourceNotFoundException(("Hotel not found with Id -> " + hotelId)));
 
-        log.debug("Hotel found -> {}",hotel.getId());
+        log.info("Hotel found -> {}",hotel.getId());
 
         Room room = modelMapper.map(rootDto,Room.class);
         room.setHotel(hotel);
 
-        log.debug("Set room with hotel -> {}",room);
+        Room room1 = roomRepository.save(room);
 
-//        TODO : create inventory asa room is created and if hotle is active
-        return modelMapper.map(roomRepository.save(room),RoomDto.class);
+        log.info("Set room with hotel -> {}",room1.toString());
+
+        if (hotel.getActive())
+        {
+            log.info("Initializing Room after hotel is found active -> {}",room);
+            inventoryService.initializeRoomForOneYear(room);
+        }
+
+        return modelMapper.map(room1,RoomDto.class);
 
     }
 
@@ -70,14 +81,14 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
+    @Transactional
     public void deleteRoomById(Long roomId)
     {
-        boolean exists = roomRepository.existsById(roomId);
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found with Id -> " + roomId));
 
-        if(!exists) throw  new ResourceNotFoundException("Room not found with Id -> " + roomId);
-
+        inventoryService.deleteFutureInventories(room);
         roomRepository.deleteById(roomId);
 
-//         TODO : Delete All future room inventories for this room
     }
 }

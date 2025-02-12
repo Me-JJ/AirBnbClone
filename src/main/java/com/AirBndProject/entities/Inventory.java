@@ -1,8 +1,7 @@
 package com.AirBndProject.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,6 +16,9 @@ import java.time.LocalDateTime;
         name = "unique_hotel_room_date",
         columnNames = {"hotel_id","room_id","date"}
 ))
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Inventory
 {
     @Id
@@ -27,7 +29,7 @@ public class Inventory
     @JoinColumn(name = "hotel_id",nullable = false)
     private Hotel hotel;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "room_id",nullable = false)
     private Room room;
 

@@ -1,6 +1,7 @@
 package com.AirBndProject.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,14 +9,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.context.annotation.Primary;
 
 import java.time.LocalDateTime;
-
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "hotel")
 public class Hotel
 {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,5 +41,7 @@ public class Hotel
     @Embedded
     private HotelContactInfo hotelInfo;
 
+    @ManyToOne
+    private User owner;
 
 }

@@ -29,7 +29,7 @@ public class Inventory
     @JoinColumn(name = "hotel_id",nullable = false)
     private Hotel hotel;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id",nullable = false)
     private Room room;
 

@@ -5,6 +5,7 @@ import com.AirBndProject.entities.Hotel;
 import com.AirBndProject.entities.Room;
 import com.AirBndProject.exceptions.ResourceNotFoundException;
 import com.AirBndProject.repository.HotelRepository;
+import com.AirBndProject.repository.RoomRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ public class HotelServiceImpl implements HotelService
     private final HotelRepository hotelRepository;
     private final ModelMapper modelMapper;
     private final InventoryService inventoryService;
+    private final RoomRepository roomRepository;
 
 
     @Override
@@ -63,13 +65,17 @@ public class HotelServiceImpl implements HotelService
                 .findById(id)
                 .orElseThrow(
                         ()->new ResourceNotFoundException("Hotel not found with Id -> "+ id));
-
-        hotelRepository.deleteById(id);
+        log.info("found hotel with id -> "+ id+ " --- "+hotel);
 
         for(Room room:hotel.getRooms())
         {
-            inventoryService.deleteFutureInventories(room);
+            log.info("traverse hotel rooms - id = -> "+ room.getId());
+            inventoryService.deleteAllinventories(room);
+            roomRepository.deleteById(room.getId());
         }
+        hotelRepository.deleteById(id);
+
+
 
     }
 
@@ -83,15 +89,13 @@ public class HotelServiceImpl implements HotelService
                         ()->new ResourceNotFoundException("Hotel not found with Id -> "+ id));
 
         hotel.setActive(true);
-//        Assuming only do it once
+//      Assuming only do it once
 
         for (Room room : hotel.getRooms()) {
             inventoryService.initializeRoomForOneYear(room);
         }
 
         hotelRepository.save(hotel);
-
-
     }
 
 

@@ -5,17 +5,13 @@ import com.AirBndProject.entities.Hotel;
 import com.AirBndProject.entities.Room;
 import com.AirBndProject.exceptions.ResourceNotFoundException;
 import com.AirBndProject.repository.HotelRepository;
-import com.AirBndProject.repository.InventoryRepository;
 import com.AirBndProject.repository.RoomRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Service;
 
-import java.security.PrivilegedAction;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,7 +83,7 @@ public class RoomServiceImpl implements RoomService{
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new ResourceNotFoundException("Room not found with Id -> " + roomId));
 
-        inventoryService.deleteFutureInventories(room);
+        inventoryService.deleteAllinventories(room);
         roomRepository.deleteById(roomId);
 
     }

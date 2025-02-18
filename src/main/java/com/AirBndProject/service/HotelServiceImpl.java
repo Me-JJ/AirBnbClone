@@ -1,6 +1,8 @@
 package com.AirBndProject.service;
 
 import com.AirBndProject.dto.HotelDto;
+import com.AirBndProject.dto.HotelInfoDto;
+import com.AirBndProject.dto.RoomDto;
 import com.AirBndProject.entities.Hotel;
 import com.AirBndProject.entities.Room;
 import com.AirBndProject.exceptions.ResourceNotFoundException;
@@ -11,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j // for logging purposes
@@ -96,6 +101,18 @@ public class HotelServiceImpl implements HotelService
         }
 
         hotelRepository.save(hotel);
+    }
+
+    @Override
+    public HotelInfoDto getHotelInfoById(Long hotelId) {
+        Hotel hotel=hotelRepository
+                .findById(hotelId)
+                .orElseThrow(
+                        ()->new ResourceNotFoundException("Hotel not found with Id -> "+ hotelId));
+        List<RoomDto> roomDtos = hotel.getRooms().stream().map((element) -> modelMapper.map(element, RoomDto.class)).toList();
+
+
+        return new HotelInfoDto(modelMapper.map(hotel,HotelDto.class),roomDtos);
     }
 
 

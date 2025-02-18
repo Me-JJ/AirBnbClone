@@ -1,6 +1,7 @@
 package com.AirBndProject.service;
 
 import com.AirBndProject.dto.HotelDto;
+import com.AirBndProject.dto.HotelInfoDto;
 
 public interface HotelService
 {
@@ -12,4 +13,6 @@ public interface HotelService
 
     void deleteHotelById(Long id);
     void activateHotel(Long id);
+
+    HotelInfoDto getHotelInfoById(Long hotelId);
 }

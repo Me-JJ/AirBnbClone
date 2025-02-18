@@ -35,7 +35,7 @@ public class GlobalExceptionHandler
     public ResponseEntity<ApiResponse<?>> handleInternalServerError(Exception exc)
     {
         ApiError ae= ApiError.builder()
-                .message("Sorry !!, Server not responding \n"+exc.getLocalizedMessage())
+                .message("Sorry !!, Server not responding -> " + exc.getLocalizedMessage())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .build();
 

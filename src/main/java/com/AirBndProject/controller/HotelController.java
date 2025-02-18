@@ -47,7 +47,7 @@ public class HotelController
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping(path = "/{id}")
+    @PatchMapping(path = "/{id}/activate")
     public ResponseEntity<Void> activeHotel(@PathVariable Long id)
     {
         hotelService.activateHotel(id);

@@ -1,10 +1,12 @@
 package com.AirBndProject.service;
 
 import com.AirBndProject.dto.HotelDto;
+import com.AirBndProject.dto.HotelPriceDto;
 import com.AirBndProject.dto.HotelSearchRequest;
 import com.AirBndProject.entities.Hotel;
 import com.AirBndProject.entities.Inventory;
 import com.AirBndProject.entities.Room;
+import com.AirBndProject.repository.HotelMinPriceRepository;
 import com.AirBndProject.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -27,9 +29,10 @@ public class InventoryServiceImpl implements InventoryService
     private final ModelMapper modelMapper;
 
     private final InventoryRepository inventoryRepository;
+    private final HotelMinPriceRepository hotelMinPriceRepository;
 
     @Override
-    public Page<HotelDto> searchHotels(HotelSearchRequest hotelSearchRequest)
+    public Page<HotelPriceDto> searchHotels(HotelSearchRequest hotelSearchRequest)
     {
         log.info("Searching hotels for {} city, from {} to {}", hotelSearchRequest.getCity(), hotelSearchRequest.getStartDate(), hotelSearchRequest.getEndDate());
         log.info("HotelSearch -> "+hotelSearchRequest.toString());
@@ -44,10 +47,11 @@ public class InventoryServiceImpl implements InventoryService
         long dateCount =
                 ChronoUnit.DAYS.between(hotelSearchRequest.getStartDate(), hotelSearchRequest.getEndDate()) + 1;
 
-        Page<Hotel> hotelPage= inventoryRepository.findHotelWithAvailableInventory(hotelSearchRequest.getCity(),hotelSearchRequest.getStartDate()
-        ,hotelSearchRequest.getEndDate(),hotelSearchRequest.getRoomsCount(),dateCount,pageable);
+        // business logic - 90 days
 
-        return hotelPage.map((element) -> modelMapper.map(element, HotelDto.class));
+//        return hotelPage.map((element) -> modelMapper.map(element, HotelDto.class));
+        return hotelMinPriceRepository.findHotelWithAvailableInventory(hotelSearchRequest.getCity(),hotelSearchRequest.getStartDate()
+        ,hotelSearchRequest.getEndDate(),hotelSearchRequest.getRoomsCount(),dateCount,pageable);
     }
 
     @Override

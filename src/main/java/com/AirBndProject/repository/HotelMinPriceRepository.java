@@ -17,13 +17,12 @@ public interface HotelMinPriceRepository extends JpaRepository<HotelMinPrice,Lon
     //com.AirBndProject.dto -> we can also specify dto pkg to get the query result
 
 @Query("""
-            SELECT com.AirBndProject.dto.HotelPriceDto(i.hotel,AVG(i.price))
+            SELECT new com.AirBndProject.dto.HotelPriceDto(i.hotel, AVG(i.price))
             FROM HotelMinPrice i
             WHERE i.hotel.city = :city
                 AND i.date BETWEEN :startDate AND :endDate
-                AND i.closed = true
-                AND (i.totalCount - i.bookedCount - i.reservedCount) >= :roomsCount
-            GROUP BY i.hotel
+                AND i.hotel.active = true
+           GROUP BY i.hotel
           """)
 Page<HotelPriceDto> findHotelWithAvailableInventory(
         @Param("city") String city,

@@ -1,5 +1,6 @@
 package com.AirBndProject.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Getter;
@@ -23,7 +24,7 @@ public class Room {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id",nullable = false)
-    @ToString.Exclude
+    @JsonIgnore
     private Hotel hotel;
 
     @Column(nullable = false)

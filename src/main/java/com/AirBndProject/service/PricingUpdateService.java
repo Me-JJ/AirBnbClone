@@ -7,11 +7,13 @@ import com.AirBndProject.repository.HotelMinPriceRepository;
 import com.AirBndProject.repository.HotelRepository;
 import com.AirBndProject.repository.InventoryRepository;
 import com.AirBndProject.strategy.PricingService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class PricingUpdateService
 {
     private final HotelRepository hotelRepository;
@@ -34,6 +37,8 @@ public class PricingUpdateService
 
     // scheduler to update the inventory and hotel min price tables every hour
 
+//    @Scheduled(cron = "*/5 * * * * *")  // this runs every 5 sec
+    @Scheduled(cron = "0 0 * * * *")  // runs every 1hr
     public void updatePrices()
     {
         int page = 0;
@@ -54,6 +59,8 @@ public class PricingUpdateService
 
     private void updateHotelPrice(Hotel hotel)
     {
+        log.info("Updating hotel prices for hotel ID: {}", hotel.getId());
+
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = LocalDate.now().plusYears(1);
 
@@ -77,9 +84,11 @@ public class PricingUpdateService
 
         //prepare hotelPrice entities in bulk
         List<HotelMinPrice> hotelMinPrices = new ArrayList<>();
+        log.info("Hotel -> {}",hotel.getName());
         dailyMinPrices.forEach(((date, price) ->
         {
-            HotelMinPrice hotelPrice = hotelMinPriceRepository.findByHotelAndDate(hotel,date)
+            HotelMinPrice hotelPrice = hotelMinPriceRepository
+                    .findByHotelAndDate(hotel,date)
                     .orElse(new HotelMinPrice(hotel,date));
 
             hotelPrice.setPrice(price);

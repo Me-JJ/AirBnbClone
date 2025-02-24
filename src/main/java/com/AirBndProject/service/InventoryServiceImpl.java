@@ -71,7 +71,7 @@ public class InventoryServiceImpl implements InventoryService
                     .city(room.getHotel().getCity())
                     .date(today)
                     .price(room.getBasePrice())
-                    .surgeFactor(BigDecimal.valueOf(0.1))
+                    .surgeFactor(BigDecimal.ONE)
                     .totalCount(room.getTotalCount())
                     .reservedCount(0)
                     .closed(false)

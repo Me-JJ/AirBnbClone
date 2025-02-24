@@ -3,6 +3,9 @@ package com.AirBndProject.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.cglib.core.Local;
@@ -14,8 +17,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Service
-@Data
+@Setter
+@Slf4j
+@NoArgsConstructor
 public class HotelMinPrice
 {
     @Id
@@ -38,8 +42,11 @@ public class HotelMinPrice
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public HotelMinPrice(Hotel hotel, LocalDate date) {
+    public HotelMinPrice(Hotel hotel, LocalDate date)
+    {
+        log.info("Hotel-> {}",hotel);
         this.hotel = hotel;
         this.date = date;
     }
+
 }

@@ -7,14 +7,18 @@ import java.time.LocalDateTime;
 
 @Data
 public class ApiResponse<T> {
-    private T data;
-    private ApiError err;
-    @JsonFormat(pattern = "hh:mm:ss dd-MM-yyyy")
-    private LocalDateTime timestamp;
 
+    private LocalDateTime timeStamp;
+    private T data;
+    private ApiError error;
 
     public ApiResponse() {
-        this.timestamp = LocalDateTime.now();
+        this.timeStamp = LocalDateTime.now();
+    }
+
+    public ApiResponse(ApiError error) {
+        this();
+        this.error = error;
     }
 
     public ApiResponse(T data) {
@@ -22,8 +26,5 @@ public class ApiResponse<T> {
         this.data = data;
     }
 
-    public ApiResponse(ApiError err) {
-        this();
-        this.err = err;
-    }
+
 }

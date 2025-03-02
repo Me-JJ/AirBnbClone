@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@ToString
+//@ToString
 public class Room {
 
     @Id

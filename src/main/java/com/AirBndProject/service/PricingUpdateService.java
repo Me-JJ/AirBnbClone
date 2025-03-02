@@ -38,6 +38,7 @@ public class PricingUpdateService
     // scheduler to update the inventory and hotel min price tables every hour
 
 //    @Scheduled(cron = "*/5 * * * * *")  // this runs every 5 sec
+//    @Scheduled(cron = "*/500 * * * * *")  // this runs every 500 sec
     @Scheduled(cron = "0 0 * * * *")  // runs every 1hr
     public void updatePrices()
     {

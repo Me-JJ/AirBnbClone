@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.AirBndProject.util.AppUtils.getCurrentUser;
+
 @Service
 @Slf4j // for logging purposes
 @RequiredArgsConstructor
@@ -143,6 +145,19 @@ public class HotelServiceImpl implements HotelService
 
 
         return new HotelInfoDto(modelMapper.map(hotel,HotelDto.class),roomDtos);
+    }
+
+    @Override
+    public List<HotelDto> getAllHotels()
+    {
+        User user = getCurrentUser();
+        log.info("Getting all hotels for the admin user with ID: {}", user.getId());
+        List<Hotel> hotels = hotelRepository.findByOwner(user);
+
+        return hotels
+                .stream()
+                .map((element) -> modelMapper.map(element, HotelDto.class))
+                .collect(Collectors.toList());
     }
 
 

@@ -19,6 +19,7 @@ public class WebhookController
 //    @Value("${stripe.webhook.key}")
     private String endPointSecret="whsec_f7d6ad38d2873bc4857b5a2b63381d423cb2c7ab3b6b55696e1876ea34c20eb3";
 
+//    stripe listen --forward-to localhost:8080/api/v1/webhook/paymentstripe listen --forward-to localhost:8080/api/v1/webhook/payment -> CLI
     @PostMapping("/payment")
     public ResponseEntity<Void> capturePayments(@RequestBody String payload, @RequestHeader("Stripe-Signature") String sigHeader) {
         try {
